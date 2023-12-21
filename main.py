@@ -96,7 +96,15 @@ async def create_chat_completion(request: ChatCompletionRequest, raw_request: Re
     
     # print(prompt)
 
-    inputs = processor(prompt, images, return_tensors="pt").to(device, dtype)
+    inputs = processor(text=prompt, images=images if len(images) > 0 else None, return_tensors="pt")
+    
+    # print(inputs)
+    
+    inputs['input_ids'] = inputs['input_ids'].to(device)
+    inputs['attention_mask'] = inputs['attention_mask'].to(device)
+    
+    if inputs['pixel_values'] is not None:
+        inputs['pixel_values'] = inputs['pixel_values'].to(device)
 
     streamer = TextIteratorStreamer(
         tokenizer=processor,
