@@ -2,13 +2,14 @@
 # https://github.com/lm-sys/FastChat/blob/168ccc29d3f7edc50823016105c024fe2282732a/fastchat/protocol/openai_api_protocol.py
 import time
 import uuid
-from typing import Dict, List, Literal, Optional, Union, Any
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field
 
+
 def random_uuid() -> str:
     return str(uuid.uuid4().hex)
-    
+
 
 class ErrorResponse(BaseModel):
     object: str = "error"
@@ -187,4 +188,5 @@ class ChatCompletionStreamResponse(BaseModel):
     model: str
     choices: List[ChatCompletionResponseStreamChoice]
     usage: Optional[UsageInfo] = Field(
-        default=None, description="data about request and response")
+        default=None, description="data about request and response"
+    )

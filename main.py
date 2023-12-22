@@ -60,6 +60,9 @@ def read_image(input_string):
     else:
         raise ValueError("Unsupported input format")
 
+    img = img.convert("RGB")
+    img.thumbnail((512, 512))
+
     return img
 
 
@@ -75,36 +78,38 @@ async def create_chat_completion(request: ChatCompletionRequest, raw_request: Re
     images = []
 
     for message in request.messages:
-        if message['role'] == "user":
+        if message["role"] == "user":
             prompt += "USER:\n"
-            for content in message['content']:
-                if content['type'] == "text":
+            for content in message["content"]:
+                if content["type"] == "text":
                     prompt += f"{content['text']}\n"
-                if content['type'] == "image_url":
+                if content["type"] == "image_url":
                     # read the image
-                    url = content['image_url']['url']
+                    url = content["image_url"]["url"]
                     image = read_image(url)
                     images.append(image)
                     prompt += f"<image>\n"
-        if message['role'] == "assistant":
+        if message["role"] == "assistant":
             prompt += "ASSISTANT:\n"
-            for content in message['content']:
-                if content['type'] == "text":
+            for content in message["content"]:
+                if content["type"] == "text":
                     prompt += f"{content['text']}\n"
 
     prompt += "ASSISTANT:\n"
-    
+
     # print(prompt)
 
-    inputs = processor(text=prompt, images=images if len(images) > 0 else None, return_tensors="pt")
-    
+    inputs = processor(
+        text=prompt, images=images if len(images) > 0 else None, return_tensors="pt"
+    )
+
     # print(inputs)
-    
-    inputs['input_ids'] = inputs['input_ids'].to(device)
-    inputs['attention_mask'] = inputs['attention_mask'].to(device)
-    
-    if inputs['pixel_values'] is not None:
-        inputs['pixel_values'] = inputs['pixel_values'].to(device)
+
+    inputs["input_ids"] = inputs["input_ids"].to(device)
+    inputs["attention_mask"] = inputs["attention_mask"].to(device)
+
+    if inputs["pixel_values"] is not None:
+        inputs["pixel_values"] = inputs["pixel_values"].to(device)
 
     streamer = TextIteratorStreamer(
         tokenizer=processor,
