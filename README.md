@@ -45,3 +45,17 @@ for chunk in response:
     if chunk.choices[0].delta.content:
         print(chunk.choices[0].delta.content, end="")
 ```
+
+## NOTES
+
+The model being used in this is `llava-hf/bakLlava-v1-hf` which is a mistral backbone model of llava
+
+You can also use `llava-hf/llava-1.5-7b-hf`
+
+```
+model_id = "llava-hf/llava-1.5-7b-hf"
+quantization_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_compute_dtype=torch.float16
+)
+```
