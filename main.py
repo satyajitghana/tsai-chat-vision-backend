@@ -39,7 +39,7 @@ dtype = torch.bfloat16
 
 
 model = LlavaForConditionalGeneration.from_pretrained(
-    model_name, torch_dtype=dtype, low_cpu_mem_usage=True, device_map=device,
+    model_name, torch_dtype=dtype, device_map=device,
 )
 
 processor = AutoProcessor.from_pretrained(model_name)
